@@ -19,12 +19,6 @@ import groovy.transform.TypeChecked
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-import static PublishSiteToGitHubTask.PUBLISH_SITE_TO_GITHUB
-import static com.stehno.gradle.site.AggregateSiteTask.AGGREGATE_SITE
-import static com.stehno.gradle.site.CleanSiteTask.CLEAN_SITE
-import static com.stehno.gradle.site.RenderSiteTask.RENDER_SITE
-import static com.stehno.gradle.site.StartPreviewTask.START_PREVIEW
-import static com.stehno.gradle.site.StopPreviewTask.STOP_PREVIEW
 import static com.stehno.gradle.web.StartPreviewTask.START_PREVIEW
 import static com.stehno.gradle.web.StopPreviewTask.STOP_PREVIEW
 

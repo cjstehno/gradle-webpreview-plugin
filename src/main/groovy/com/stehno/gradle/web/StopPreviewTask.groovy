@@ -21,7 +21,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 
-import static com.stehno.gradle.site.ServerMonitor.sendStopMessage
+import static com.stehno.gradle.web.ServerMonitor.stopServer
 
 /**
  * Task used to shutdown the preview server.
@@ -43,6 +43,6 @@ class StopPreviewTask extends DefaultTask {
     }
 
     @TaskAction void stop() {
-        sendStopMessage monitorPort
+        stopServer monitorPort
     }
 }

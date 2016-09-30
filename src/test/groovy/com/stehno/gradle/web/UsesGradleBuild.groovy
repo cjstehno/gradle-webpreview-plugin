@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.stehno.gradle.site
+package com.stehno.gradle.web
 
 import groovy.text.GStringTemplateEngine
 import groovy.text.TemplateEngine
@@ -28,7 +28,7 @@ import org.junit.rules.TemporaryFolder
  */
 trait UsesGradleBuild {
 
-    String getBuildTemplate(){ '' }
+    String getBuildTemplate() { '' }
 
     abstract TemporaryFolder getProjectRoot()
 
@@ -36,7 +36,7 @@ trait UsesGradleBuild {
 
     void buildFile(final Map<String, Object> config = [:]) {
         File buildFile = projectRoot.newFile('build.gradle')
-        buildFile.text = (templateEngine.createTemplate(buildTemplate).make(config:config) as String).stripIndent()
+        buildFile.text = (templateEngine.createTemplate(buildTemplate).make(config: config) as String).stripIndent()
     }
 
     GradleRunner gradleRunner(final List<String> args) {

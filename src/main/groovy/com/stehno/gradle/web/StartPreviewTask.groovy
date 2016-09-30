@@ -22,8 +22,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+
+import java.awt.*
+import java.awt.datatransfer.StringSelection
 
 /**
  * Task used to start a local preview web server.
@@ -31,27 +33,13 @@ import org.gradle.api.tasks.TaskAction
 @TypeChecked
 class StartPreviewTask extends DefaultTask {
 
-    // TODO: copy the URL to the clipboard
-
     static final String START_PREVIEW = 'startPreview'
 
     @Input @Optional int port = 0
     @Input @Optional int monitorPort = 10101
     @Input @Optional boolean runInBackground = true
-
-    private File _resourceDir
-
-    @OutputDirectory @Optional
-    File getResourceDir() {
-        if (!_resourceDir) {
-            _resourceDir = (project.tasks.findByName('renderSite') as RenderSiteTask).getOutputDir()
-        }
-        _resourceDir
-    }
-
-    void setResourceDir(final File resourceDir) {
-        _resourceDir = resourceDir
-    }
+    @Input File resourceDir
+    @Input @Optional boolean copyUrl = true
 
     @TaskAction void start() {
         def server = new Server(port)
@@ -64,10 +52,15 @@ class StartPreviewTask extends DefaultTask {
         server.handler = handler
         server.start()
 
-        logger.lifecycle 'Started preview server (http://localhost:{})...', server.connectors[0].localPort
+        int actualPort = server.connectors[0].localPort
+        logger.lifecycle 'Started preview server (http://localhost:{})...', actualPort
+
+        if (copyUrl) {
+            Toolkit.defaultToolkit?.systemClipboard?.setContents(new StringSelection("http://localhost:$actualPort"), null)
+        }
 
         if (runInBackground) {
-            new com.stehno.gradle.site.ServerMonitor(monitorPort, server).start()
+            new ServerMonitor(monitorPort, server).start()
         } else {
             server.join()
         }

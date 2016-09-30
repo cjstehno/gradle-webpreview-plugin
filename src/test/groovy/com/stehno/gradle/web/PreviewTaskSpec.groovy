@@ -13,37 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.stehno.gradle.site
+package com.stehno.gradle.web
 
-import com.stehno.vanilla.test.PropertyRandomizer
 import org.gradle.testkit.runner.BuildResult
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Ignore
 import spock.lang.Specification
 
-import static com.stehno.gradle.site.ServerMonitor.sendStopMessage
-import static com.stehno.vanilla.test.PropertyRandomizer.randomize
-import static com.stehno.vanilla.test.Randomizers.forString
+import static com.stehno.gradle.web.ServerMonitor.stopServer
 
 class PreviewTaskSpec extends Specification implements UsesGradleBuild {
 
     @Rule TemporaryFolder projectRoot = new TemporaryFolder()
 
-    private static final PropertyRandomizer stringRando = randomize(String) {
-        typeRandomizer String, forString(100..200)
-    }
-
-    @Ignore('This test is a bit flaky - it works in an installed project') // TODO: make this work
     def 'start/stop preview server'() {
         given:
         buildFile(extension: '''
             startPreview {
                 port = 8080
+                resourceDir = file('src/site')
             }
         ''')
 
-        String content = stringRando.one() as String
+        String content = 'This is some really cool web content!'
 
         File siteDir = projectRoot.newFolder('src', 'site')
         new File(siteDir, 'index.html').text = content
@@ -67,18 +59,18 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
         'http://localhost:8080/index.html'.toURL().text
 
         then:
-        thrown()
+        def ex = thrown(Exception)
+        ex.message == 'Connection refused'
 
         cleanup: 'make sure everything is shutdown'
-        sendStopMessage 10101
+        stopServer 10101
     }
 
     @Override
     String getBuildTemplate() {
         '''
             plugins {
-                id 'com.stehno.gradle.site'
-                id 'java'
+                id 'com.stehno.gradle.webpreview'
             }
             repositories {
                 jcenter()

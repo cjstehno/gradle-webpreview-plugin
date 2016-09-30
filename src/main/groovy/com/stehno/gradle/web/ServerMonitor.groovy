@@ -19,13 +19,15 @@ import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 import org.eclipse.jetty.server.Server
 
+import static java.net.InetAddress.getByName
+
 /**
  * Monitor thread used to store a reference to an active preview server.
  */
 @TypeChecked @Slf4j
 class ServerMonitor extends Thread {
 
-    static final byte MAGIC_BYTE = (byte) 42
+    private static final byte SHUTDOWN_BYTE = (byte) 42
     private final Server server
     private ServerSocket serverSocket
 
@@ -35,76 +37,48 @@ class ServerMonitor extends Thread {
         daemon = true
         setName('PreviewServerMonitor')
 
-        serverSocket = new ServerSocket(port, 1, InetAddress.getByName('127.0.0.1'))
+        serverSocket = new ServerSocket(port, 1, getByName('127.0.0.1'))
         serverSocket.reuseAddress = true
     }
 
     public void run() {
         while (serverSocket) {
-            Socket socket = null
             try {
-                socket = serverSocket.accept()
-                socket.setSoLinger(false, 0)
+                serverSocket.accept().withCloseable { Socket socket ->
+                    socket.setSoLinger(false, 0)
 
-                socket.inputStream.withStream { instream ->
-                    DataInputStream input = new DataInputStream(instream)
+                    socket.inputStream.withStream { instream ->
+                        DataInputStream input = new DataInputStream(instream)
 
-                    if (input.readByte() == MAGIC_BYTE) {
-                        try {
+                        if (input.readByte() == SHUTDOWN_BYTE) {
                             socket.close()
-                        } catch (Exception e) {
-                            e.printStackTrace()
-                        }
-                        try {
-                            socket.close()
-                        } catch (Exception e) {
-                            e.printStackTrace()
-                        }
-                        try {
                             serverSocket.close()
-                        } catch (Exception e) {
-                            e.printStackTrace()
-                        }
-
-                        serverSocket = null
-
-                        try {
+                            serverSocket = null
                             server.stop()
-                        } catch (Exception e) {
-                            // nothing?
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace()
-            } finally {
-                if (socket != null) {
-                    try {
-                        socket.close()
-                    } catch (Exception e) {
-                        // nothing?
-                    }
-                }
-                socket = null;
+            } catch (Exception ex) {
+                ex.printStackTrace()
             }
         }
     }
 
-    static void sendStopMessage(final int monitorPort) {
+    static void stopServer(final int monitorPort = 10101) {
+        Socket socket = null
         try {
-            Socket socket = new Socket(InetAddress.getByName('127.0.0.1'), monitorPort)
+            socket = new Socket(getByName('127.0.0.1'), monitorPort)
             socket.setSoLinger(false, 0)
 
             socket.outputStream.withStream { out ->
-                out.write(MAGIC_BYTE)
+                out.write(SHUTDOWN_BYTE)
                 out.flush()
             }
-            socket.close()
 
-        } catch (ConnectException e) {
-            log.info 'Preview server is not running.'
-        } catch (Exception e) {
-            log.warn 'Problem stopping preview server: {}', e.message
+        } catch (Exception ex) {
+            // nothing
+        } finally {
+            socket?.close()
         }
     }
 }

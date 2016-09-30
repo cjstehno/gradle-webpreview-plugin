@@ -56,7 +56,7 @@ pluginBundle {
     tags = ['gradle', 'groovy']
 
     plugins {
-        sitePlugin {
+        webpreviewPlugin {
             id = 'com.stehno.gradle.webpreview'
             displayName = 'Gradle Web Preview Plugin'
         }
