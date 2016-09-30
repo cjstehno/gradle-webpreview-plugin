@@ -15,17 +15,34 @@
  */
 package com.stehno.gradle.web
 
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Optional
-
 /**
  * Gradle DSL extension used to configure the Web Preview plugin.
  */
 class WebPreviewExtension {
 
-    @Input @Optional int port = 0
-    @Input @Optional int monitorPort = 10101
-    @Input @Optional boolean runInBackground = true
-    @Input File resourceDir
-    @Input @Optional boolean copyUrl = true
+    /**
+     * The web server port where content is to be served. The default is 0, which will choose a random available port. This port
+     * will be displayed in the output logs on startup.
+     */
+    int port = 0
+
+    /**
+     * The port used by the background monitor. Defaults to 10101
+     */
+    int monitorPort = 10101
+
+    /**
+     * Specifies whether or not the server should be run in the background or foreground. Defaults to true.
+     */
+    boolean runInBackground = true
+
+    /**
+     * Specifies the directory where the web resources are to be served from. This property is required.
+     */
+    File resourceDir
+
+    /**
+     * Whether or not the server URL is copied to the local clipboard on startup.
+     */
+    boolean copyUrl = true
 }

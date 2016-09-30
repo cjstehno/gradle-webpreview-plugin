@@ -15,7 +15,6 @@
  */
 package com.stehno.gradle.web
 
-import groovy.transform.TypeChecked
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
@@ -28,13 +27,14 @@ import java.awt.datatransfer.StringSelection
 /**
  * Task used to start a local preview web server.
  */
-@TypeChecked
 class StartPreviewTask extends DefaultTask {
 
     static final String START_PREVIEW = 'startPreview'
 
     @TaskAction @SuppressWarnings('GroovyUnusedDeclaration') void start() {
         WebPreviewExtension extension = project.extensions.getByType(WebPreviewExtension)
+
+        assert extension.resourceDir, 'No resourceDir configuration was provided.'
 
         def server = new Server(extension.port)
 
@@ -46,9 +46,9 @@ class StartPreviewTask extends DefaultTask {
         server.handler = handler
         server.start()
 
-        String serverUrl = "http://localhost:${server.connectors[0].localPort}"
+        String serverUrl = "http://localhost:${server.connectors[0]._localPort}"
 
-        logger.lifecycle 'Started preview server (http://localhost:{}) for {}', server, extension.resourceDir
+        logger.lifecycle 'Started preview server ({}) for {}', serverUrl, extension.resourceDir
 
         if (extension.copyUrl) {
             Toolkit.defaultToolkit?.systemClipboard?.setContents(new StringSelection(serverUrl), null)
@@ -59,6 +59,7 @@ class StartPreviewTask extends DefaultTask {
             logger.lifecycle 'Running in background (to stop run: stopPreview)'
             new ServerMonitor(extension.monitorPort, server).start()
         } else {
+            logger.lifecycle('Use CTRL+C to stop.')
             server.join()
         }
     }

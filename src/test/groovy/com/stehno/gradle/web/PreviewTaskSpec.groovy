@@ -56,11 +56,11 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
         totalSuccess result
 
         when:
-        'http://localhost:8080/index.html'.toURL().text
+        String text = 'http://localhost:8080/index.html'.toURL().text
 
         then:
-        def ex = thrown(Exception)
-        ex.message == 'Connection refused'
+        !text
+        thrown(Exception)
 
         cleanup: 'make sure everything is shutdown'
         stopServer 10101
