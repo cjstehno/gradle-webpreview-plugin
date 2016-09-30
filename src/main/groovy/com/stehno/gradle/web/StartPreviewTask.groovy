@@ -20,8 +20,6 @@ import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 
 import java.awt.*
@@ -35,32 +33,31 @@ class StartPreviewTask extends DefaultTask {
 
     static final String START_PREVIEW = 'startPreview'
 
-    @Input @Optional int port = 0
-    @Input @Optional int monitorPort = 10101
-    @Input @Optional boolean runInBackground = true
-    @Input File resourceDir
-    @Input @Optional boolean copyUrl = true
+    @TaskAction @SuppressWarnings('GroovyUnusedDeclaration') void start() {
+        WebPreviewExtension extension = project.extensions.getByType(WebPreviewExtension)
 
-    @TaskAction void start() {
-        def server = new Server(port)
+        def server = new Server(extension.port)
 
         def handler = new ServletContextHandler(ServletContextHandler.SESSIONS)
         handler.contextPath = '/'
         handler.resourceBase = '.'
-        handler.addServlet(DefaultServlet, '/').setInitParameter('resourceBase', resourceDir as String)
+        handler.addServlet(DefaultServlet, '/').setInitParameter('resourceBase', extension.resourceDir as String)
 
         server.handler = handler
         server.start()
 
-        int actualPort = server.connectors[0].localPort
-        logger.lifecycle 'Started preview server (http://localhost:{})...', actualPort
+        String serverUrl = "http://localhost:${server.connectors[0].localPort}"
 
-        if (copyUrl) {
-            Toolkit.defaultToolkit?.systemClipboard?.setContents(new StringSelection("http://localhost:$actualPort"), null)
+        logger.lifecycle 'Started preview server (http://localhost:{}) for {}', server, extension.resourceDir
+
+        if (extension.copyUrl) {
+            Toolkit.defaultToolkit?.systemClipboard?.setContents(new StringSelection(serverUrl), null)
+            logger.lifecycle 'Url copied to clipboard.'
         }
 
-        if (runInBackground) {
-            new ServerMonitor(monitorPort, server).start()
+        if (extension.runInBackground) {
+            logger.lifecycle 'Running in background (to stop run: stopPreview)'
+            new ServerMonitor(extension.monitorPort, server).start()
         } else {
             server.join()
         }

@@ -29,7 +29,7 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
     def 'start/stop preview server'() {
         given:
         buildFile(extension: '''
-            startPreview {
+            webPreview {
                 port = 8080
                 resourceDir = file('src/site')
             }

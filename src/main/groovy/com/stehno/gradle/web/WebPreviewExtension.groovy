@@ -15,22 +15,17 @@
  */
 package com.stehno.gradle.web
 
-import groovy.transform.TypeChecked
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
-
-import static com.stehno.gradle.web.ServerMonitor.stopServer
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 
 /**
- * Task used to shutdown the preview server.
+ * Gradle DSL extension used to configure the Web Preview plugin.
  */
-@TypeChecked
-class StopPreviewTask extends DefaultTask {
+class WebPreviewExtension {
 
-    static final String STOP_PREVIEW = 'stopPreview'
-
-    @TaskAction @SuppressWarnings('GroovyUnusedDeclaration') void stop() {
-        WebPreviewExtension extension = project.extensions.findByType(WebPreviewExtension)
-        stopServer extension.monitorPort
-    }
+    @Input @Optional int port = 0
+    @Input @Optional int monitorPort = 10101
+    @Input @Optional boolean runInBackground = true
+    @Input File resourceDir
+    @Input @Optional boolean copyUrl = true
 }

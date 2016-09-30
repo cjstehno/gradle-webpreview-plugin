@@ -29,6 +29,8 @@ import static com.stehno.gradle.web.StopPreviewTask.STOP_PREVIEW
 class WebPreviewPlugin implements Plugin<Project> {
 
     @Override void apply(final Project project) {
+        project.extensions.create('webPreview', WebPreviewExtension)
+
         project.task START_PREVIEW, type: StartPreviewTask, group: 'Documentation', description: 'Starts a simple web preview server to serve local content.'
         project.task STOP_PREVIEW, type: StopPreviewTask, group: 'Documentation', description: 'Stops the preview server, if it is running.'
     }
