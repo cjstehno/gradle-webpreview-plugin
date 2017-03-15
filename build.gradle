@@ -39,8 +39,10 @@ dependencies {
 }
 
 test {
-    forkEvery = 1
-    maxParallelForks = 2
+    testLogging {
+        events 'failed'
+        exceptionFormat 'short'
+    }
 }
 
 groovydoc {
