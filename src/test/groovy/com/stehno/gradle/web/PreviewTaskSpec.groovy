@@ -61,7 +61,7 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
         result = gradleRunner(['stopPreview']).build()
 
         // there is a bit of a lag between stop command and actual stop
-        sleep 1000
+        sleep 2000
 
         then: 'the build is successful'
         totalSuccess result
