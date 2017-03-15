@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Christopher J. Stehno <chris@stehno.com>
+ * Copyright (C) 2017 Christopher J. Stehno <chris@stehno.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,7 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
         result = gradleRunner(['stopPreview']).build()
 
         then: 'the build is successful'
+        println result.output
         totalSuccess result
 
         when:

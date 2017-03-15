@@ -1,5 +1,8 @@
 # Gradle Web Preview Plugin
 
+
+[![Build Status](https://travis-ci.org/cjstehno/gradle-webpreview-plugin.svg?branch=master)](https://travis-ci.org/cjstehno/gradle-webpreview-plugin) [![Coverage Status](https://coveralls.io/repos/github/cjstehno/gradle-webpreview-plugin/badge.svg?branch=master)](https://coveralls.io/github/cjstehno/gradle-webpreview-plugin?branch=master)
+
 A Gradle plugin to help you preview site documentation or other web content locally. When run, this plugin starts an embedded Jetty server against
 the configured local content so that you can preview local web content, whether it is documentation or a project web site.
 
@@ -19,7 +22,7 @@ You can apply the plugin using the `buildscript` block:
         }
       }
       dependencies {
-        classpath "gradle.plugin.com.stehno.gradle:webpreview:0.1.1"
+        classpath "gradle.plugin.com.stehno.gradle:webpreview:0.1.2"
       }
     }
     
@@ -28,7 +31,7 @@ You can apply the plugin using the `buildscript` block:
 Or the newer `plugins` block:
 
     plugins {
-      id "com.stehno.gradle.webpreview" version "0.1.1"
+      id "com.stehno.gradle.webpreview" version "0.1.2"
     }
     
 ## Usage
@@ -67,3 +70,11 @@ executed.
 ### `stopPreview`
 
 The `stopPreview` task is used to stop the preview server when it is running in background mode.
+
+## Building
+
+You can build the project with Gradle:
+
+    ./gradlew clean build
+
+Note that if you are using this plugin in other builds, some of the tests may fail (and kill your running preview servers).
