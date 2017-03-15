@@ -6,6 +6,6 @@ env:
   - TERM=dumb
 before_script:
   - ./gradlew --version
-script: ./gradlew --no-daemon build
+script: ./gradlew --no-daemon build --stacktrace
 after_success:
   - ./gradlew --no-daemon jacocoTestReport coveralls
