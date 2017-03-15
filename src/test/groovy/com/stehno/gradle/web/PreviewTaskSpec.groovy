@@ -28,12 +28,20 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
 
     def 'start/stop preview server'() {
         given:
-        buildFile(extension: '''
+        Random random = new Random()
+
+        def portRange = 2048..20202
+
+        int monitorPort = portRange[random.nextInt(portRange.size())]
+        int serverPort = monitorPort + 1
+
+        buildFile(extension: """
             webPreview {
-                port = 8080
+                port = $serverPort
+                monitorPort = $monitorPort
                 resourceDir = file('src/site')
             }
-        ''')
+        """)
 
         String content = 'This is some really cool web content!'
 
@@ -47,24 +55,26 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
         totalSuccess result
 
         and: 'the content is accessible'
-        'http://localhost:8080/index.html'.toURL().text == content
+        "http://localhost:$serverPort/index.html".toURL().text == content
 
         when: 'the stop task is run'
         result = gradleRunner(['stopPreview']).build()
 
+        // there is a bit of a lag between stop command and actual stop
+        sleep 1000
+
         then: 'the build is successful'
-        println result.output
         totalSuccess result
 
         when:
-        String text = 'http://localhost:8080/index.html'.toURL().text
+        String text = "http://localhost:$serverPort/index.html".toURL().text
 
         then:
         !text
         thrown(Exception)
 
         cleanup: 'make sure everything is shutdown'
-        stopServer 10101
+        stopServer monitorPort
     }
 
     @Override
