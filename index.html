@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
@@ -9,50 +9,97 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
     <title>Gradle Web Preview Plugin by cjstehno</title>
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <header>
-      <div class="container">
+<header>
+    <div class="container">
         <h1>Gradle Web Preview Plugin</h1>
         <h2>Gradle plugin used to serve local web content previews.</h2>
 
         <section id="downloads">
-          <a href="https://github.com/cjstehno/gradle-webpreview-plugin/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/cjstehno/gradle-webpreview-plugin/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/cjstehno/gradle-webpreview-plugin" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+            <a href="https://github.com/cjstehno/gradle-webpreview-plugin" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+            <a href="https://github.com/cjstehno/gradle-webpreview-plugin/issues" class="btn">Open Issues</a>
+            <a href="https://plugins.gradle.org/plugin/com.stehno.gradle.webpreview" class="btn">Gradle Plugins Page</a>
         </section>
-      </div>
-    </header>
+    </div>
+</header>
 
-    <div class="container">
-      <section id="main_content">
+<div class="container">
+    <section id="main_content">
+
+        <h2>Get It</h2>
 
         Build script snippet for use in all Gradle versions:
 
-<pre>buildscript {
+        <pre>buildscript {
   repositories {
     maven {
       url "https://plugins.gradle.org/m2/"
     }
   }
   dependencies {
-    classpath "gradle.plugin.com.stehno.gradle:webpreview:0.1.0"
+    classpath "gradle.plugin.com.stehno.gradle:webpreview:0.1.2"
   }
 }
 
 apply plugin: "com.stehno.gradle.webpreview"</pre>
-        
-Build script snippet for new, incubating, plugin mechanism introduced in Gradle 2.1:
 
-<pre>plugins {
-  id "com.stehno.gradle.webpreview" version "0.1.0"
+        Build script snippet for new, incubating, plugin mechanism introduced in Gradle 2.1:
+
+        <pre>plugins {
+  id "com.stehno.gradle.webpreview" version "0.1.2"
 }</pre>
-        
-      </section>
-    </div>
 
-    
-  </body>
+        <h2>Configure It</h2>
+
+        <p>To configure the Web Preview plugin, the `webPreview` extension is provided:</p>
+
+        <pre>webPreview {
+  port = 0
+  monitorPort = 10101
+  runInBackground = true
+  copyUrl = true
+  resourceDir = file('build/web')
+}</pre>
+
+        <p>where:</p>
+
+        <ul>
+            <li><code>port</code> - the web server port where content is to be served. The default is <code>0</code>, which will choose a
+                random available port. This port will be displayed in the output logs on startup.
+            </li>
+            <li><code>monitorPort</code> - the port used by the background monitor. Defaults to <code>10101</code>.</li>
+            <li><code>runInBackground</code> - specifies whether or not the server should be run in the background or foreground. Defaults to
+                <code>true</code>.
+            </li>
+            <li><code>resourceUrl</code> - used to specify the directory where the web resources are to be served from. This property is required and
+                the server will fail to start without it.
+            </li>
+            <li><code>copyUrl</code> - determines whether or not the server URL is copied to the local clipboard on startup. This is handy when
+                running locally with the random port setting.
+            </li>
+        </ul>
+
+        <h2>Use It</h2>
+
+        <p>The plugin provides two tasks:</p>
+
+        <ul>
+            <li><code>startPreview</code> - used to start the preview server with the configuration provided in the <code>webPreview</code> extension.
+                If the server is started in background mode, the <code>stopPreview</code> task will need to be executed in order to stop the server,
+                otherwise, the build will run until <code>CTRL+C</code> is executed.
+            </li>
+            <li><code>stopPreview</code> - used to stop the preview server when it is running in background mode.</li>
+        </ul>
+
+    </section>
+
+    <section id="footer">
+        <hr />
+        <small>Copyright &copy; 2017 <a href="http://stehno.com">Christopher J. Stehno</a> - available under <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0 License</a>.</small>
+    </section>
+</div>
+</body>
 </html>
