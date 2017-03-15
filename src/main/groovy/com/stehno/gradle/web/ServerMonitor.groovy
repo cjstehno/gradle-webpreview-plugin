@@ -19,8 +19,6 @@ import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 import org.eclipse.jetty.server.Server
 
-import static java.net.InetAddress.getByName
-
 /**
  * Monitor thread used to store a reference to an active preview server.
  */
@@ -37,7 +35,7 @@ class ServerMonitor extends Thread {
         daemon = true
         setName('PreviewServerMonitor')
 
-        serverSocket = new ServerSocket(port, 1, getByName('127.0.0.1'))
+        serverSocket = new ServerSocket(port, 1, InetAddress.getLocalHost())
         serverSocket.reuseAddress = true
     }
 
@@ -67,7 +65,7 @@ class ServerMonitor extends Thread {
     static void stopServer(final int monitorPort = 10101) {
         Socket socket = null
         try {
-            socket = new Socket(getByName('127.0.0.1'), monitorPort)
+            socket = new Socket(InetAddress.getLocalHost(), monitorPort)
             socket.setSoLinger(false, 0)
 
             socket.outputStream.withStream { out ->

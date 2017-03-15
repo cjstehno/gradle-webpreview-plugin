@@ -26,7 +26,7 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
 
     @Rule TemporaryFolder projectRoot = new TemporaryFolder()
 
-    def 'start/stop preview server'() {
+    def 'start/stop preview server (localhost)'() {
         given:
         Random random = new Random()
 
@@ -68,6 +68,57 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
 
         when:
         String text = "http://localhost:$serverPort/index.html".toURL().text
+
+        then:
+        !text
+        thrown(Exception)
+
+        cleanup: 'make sure everything is shutdown'
+        stopServer monitorPort
+    }
+
+    def 'start/stop preview server (0.0.0.0)'() {
+        given:
+        Random random = new Random()
+
+        def portRange = 2048..20202
+
+        int monitorPort = portRange[random.nextInt(portRange.size())]
+        int serverPort = monitorPort + 1
+
+        buildFile(extension: """
+            webPreview {
+                port = $serverPort
+                monitorPort = $monitorPort
+                resourceDir = file('src/site')
+            }
+        """)
+
+        String content = 'This is some really cool web content!'
+
+        File siteDir = projectRoot.newFolder('src', 'site')
+        new File(siteDir, 'index.html').text = content
+
+        when: 'the start task is run'
+        BuildResult result = gradleRunner(['startPreview', '--stacktrace']).build()
+
+        then: 'the build is successful'
+        totalSuccess result
+
+        and: 'the content is accessible'
+        "http://0.0.0.0:$serverPort/index.html".toURL().text == content
+
+        when: 'the stop task is run'
+        result = gradleRunner(['stopPreview']).build()
+
+        // there is a bit of a lag between stop command and actual stop
+        sleep 2000
+
+        then: 'the build is successful'
+        totalSuccess result
+
+        when:
+        String text = "http://0.0.0.0:$serverPort/index.html".toURL().text
 
         then:
         !text
