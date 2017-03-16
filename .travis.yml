@@ -6,6 +6,6 @@ env:
   - TERM=dumb
 before_script:
   - ./gradlew --version
-script: ./gradlew
+script: ./gradlew build
 after_success:
   - ./gradlew jacocoTestReport coveralls
