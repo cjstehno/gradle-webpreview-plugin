@@ -35,7 +35,7 @@ class ServerMonitor extends Thread {
         daemon = true
         setName('PreviewServerMonitor')
 
-        serverSocket = new ServerSocket(port, 1, InetAddress.getLocalHost())
+        serverSocket = new ServerSocket(port, 1, InetAddress.getByName('0.0.0.0'))
         serverSocket.reuseAddress = true
     }
 
