@@ -1,7 +1,5 @@
 # Gradle Web Preview Plugin
 
-[![Build Status](https://travis-ci.org/cjstehno/gradle-webpreview-plugin.svg?branch=master)](https://travis-ci.org/cjstehno/gradle-webpreview-plugin) [![Coverage Status](https://coveralls.io/repos/github/cjstehno/gradle-webpreview-plugin/badge.svg?branch=master)](https://coveralls.io/github/cjstehno/gradle-webpreview-plugin?branch=master)
-
 A Gradle plugin to help you preview site documentation or other web content locally. When run, this plugin starts an embedded Jetty server against
 the configured local content so that you can preview local web content, whether it is documentation or a project web site.
 
