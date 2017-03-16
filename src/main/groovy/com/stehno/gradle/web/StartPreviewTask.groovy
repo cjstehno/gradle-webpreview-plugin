@@ -15,9 +15,6 @@
  */
 package com.stehno.gradle.web
 
-import org.eclipse.jetty.server.Server
-import org.eclipse.jetty.servlet.DefaultServlet
-import org.eclipse.jetty.servlet.ServletContextHandler
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -36,31 +33,14 @@ class StartPreviewTask extends DefaultTask {
 
         assert extension.resourceDir, 'No resourceDir configuration was provided.'
 
-        def server = new Server(extension.port)
+        PreviewServer server = PreviewServer.instance
+        server.start(extension.port, extension.resourceDir)
 
-        def handler = new ServletContextHandler(ServletContextHandler.SESSIONS)
-        handler.contextPath = '/'
-        handler.resourceBase = '.'
-        handler.addServlet(DefaultServlet, '/').setInitParameter('resourceBase', extension.resourceDir as String)
-
-        server.handler = handler
-        server.start()
-
-        String serverUrl = "http://localhost:${server.connectors[0]._localPort}"
-
-        logger.lifecycle 'Started preview server ({}) for {}', serverUrl, extension.resourceDir
+        logger.lifecycle 'Started preview server ({}) for {}', server.url, extension.resourceDir
 
         if (extension.copyUrl) {
-            Toolkit.defaultToolkit?.systemClipboard?.setContents(new StringSelection(serverUrl), null)
+            Toolkit.defaultToolkit?.systemClipboard?.setContents(new StringSelection(server.url), null)
             logger.lifecycle 'Url copied to clipboard.'
-        }
-
-        if (extension.runInBackground) {
-            logger.lifecycle 'Running in background (to stop run: stopPreview)'
-            new ServerMonitor(extension.monitorPort, server).start()
-        } else {
-            logger.lifecycle('Use CTRL+C to stop.')
-            server.join()
         }
     }
 }
