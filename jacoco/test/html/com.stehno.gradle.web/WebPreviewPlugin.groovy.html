@@ -19,20 +19,22 @@ import groovy.transform.TypeChecked
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+import static com.stehno.gradle.web.PreviewStatusTask.PREVIEW_STATUS
 import static com.stehno.gradle.web.StartPreviewTask.START_PREVIEW
 import static com.stehno.gradle.web.StopPreviewTask.STOP_PREVIEW
 
 /**
- * TODO: document
+ * Plugin providing management tasks for an embedded web content preview server.
  */
 @TypeChecked
 class WebPreviewPlugin implements Plugin&lt;Project&gt; {
 
     @Override void apply(final Project project) {
-<span class="fc" id="L32">        project.extensions.create('webPreview', WebPreviewExtension)</span>
+<span class="fc" id="L33">        project.extensions.create('webPreview', WebPreviewExtension)</span>
 
-<span class="fc" id="L34">        project.task START_PREVIEW, type: StartPreviewTask, group: 'Documentation', description: 'Starts a simple web preview server to serve local content.'</span>
-<span class="fc" id="L35">        project.task STOP_PREVIEW, type: StopPreviewTask, group: 'Documentation', description: 'Stops the preview server, if it is running.'</span>
+<span class="fc" id="L35">        project.task START_PREVIEW, type: StartPreviewTask, group: 'Documentation', description: 'Starts a simple web preview server to serve local content.'</span>
+<span class="fc" id="L36">        project.task STOP_PREVIEW, type: StopPreviewTask, group: 'Documentation', description: 'Stops the preview server, if it is running.'</span>
+<span class="fc" id="L37">        project.task PREVIEW_STATUS, type: PreviewStatusTask, group: 'Documentation', description: 'Displays information about the status of the preview server.'</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

@@ -19,8 +19,6 @@ import groovy.transform.TypeChecked
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-import static com.stehno.gradle.web.ServerMonitor.stopServer
-
 /**
  * Task used to shutdown the preview server.
  */
@@ -30,8 +28,9 @@ class StopPreviewTask extends DefaultTask {
     static final String STOP_PREVIEW = 'stopPreview'
 
     @TaskAction @SuppressWarnings('GroovyUnusedDeclaration') void stop() {
-<span class="fc" id="L33">        WebPreviewExtension extension = project.extensions.findByType(WebPreviewExtension)</span>
-<span class="fc" id="L34">        stopServer extension.monitorPort</span>
+<span class="fc" id="L31">        logger.lifecycle 'Stopping the preview server.'</span>
+
+<span class="fc" id="L33">        PreviewServer.instance.stop()</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
