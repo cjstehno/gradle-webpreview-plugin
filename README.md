@@ -19,7 +19,7 @@ You can apply the plugin using the `buildscript` block:
         }
       }
       dependencies {
-        classpath "gradle.plugin.com.stehno.gradle:webpreview:0.1.2"
+        classpath "gradle.plugin.com.stehno.gradle:webpreview:0.2.0"
       }
     }
     
@@ -28,7 +28,7 @@ You can apply the plugin using the `buildscript` block:
 Or the newer `plugins` block:
 
     plugins {
-      id "com.stehno.gradle.webpreview" version "0.1.2"
+      id "com.stehno.gradle.webpreview" version "0.2.0"
     }
     
 ## Usage
@@ -39,8 +39,6 @@ To configure the Web Preview plugin, the `webPreview` extension is provided:
 
     webPreview {
         port = 0
-        monitorPort = 10101
-        runInBackground = true
         copyUrl = true
         resourceDir = file('build/web')
     }
@@ -48,25 +46,17 @@ To configure the Web Preview plugin, the `webPreview` extension is provided:
 The `port` property is the web server port where content is to be served. The default is `0`, which will choose a random available port. This port 
 will be displayed in the output logs on startup.
 
-The `monitorPort` property is the port used by the background monitor. Defaults to `10101`.
-
-The 'runInBackground' property specifies whether or not the server should be run in the background or foreground. Defaults to `true`.
-
 The `resourceUrl` property is used to specify the directory where the web resources are to be served from. This property is required and the server
 will fail to start without it.
 
 The `copyUrl` property determines whether or not the server URL is copied to the local clipboard on startup. This is handy when running locally 
 with the random port setting.
 
-### `startPreview`
+### Tasks
 
-The `startPreview` task is used to start the preview server with the configuration provided in the `webPreview` extension. If the server is started
-in background mode, the `stopPreview` task will need to be executed in order to stop the server, otherwise, the build will run until `CTRL+C` is 
-executed.
-
-### `stopPreview`
-
-The `stopPreview` task is used to stop the preview server when it is running in background mode.
+* `startPreview` - used to start the preview server with the configuration provided in the `webPreview` extension.
+* 'previewStatus' - used to display the status of the preview server. 
+* `stopPreview` - used to stop the preview server when it is running in background mode.
 
 ## Building
 

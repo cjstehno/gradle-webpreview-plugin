@@ -70,10 +70,6 @@ apply plugin: "com.stehno.gradle.webpreview"</pre>
             <li><code>port</code> - the web server port where content is to be served. The default is <code>0</code>, which will choose a
                 random available port. This port will be displayed in the output logs on startup.
             </li>
-            <li><code>monitorPort</code> - the port used by the background monitor. Defaults to <code>10101</code>.</li>
-            <li><code>runInBackground</code> - specifies whether or not the server should be run in the background or foreground. Defaults to
-                <code>true</code>.
-            </li>
             <li><code>resourceUrl</code> - used to specify the directory where the web resources are to be served from. This property is required and
                 the server will fail to start without it.
             </li>
@@ -87,10 +83,8 @@ apply plugin: "com.stehno.gradle.webpreview"</pre>
         <p>The plugin provides two tasks:</p>
 
         <ul>
-            <li><code>startPreview</code> - used to start the preview server with the configuration provided in the <code>webPreview</code> extension.
-                If the server is started in background mode, the <code>stopPreview</code> task will need to be executed in order to stop the server,
-                otherwise, the build will run until <code>CTRL+C</code> is executed.
-            </li>
+            <li><code>startPreview</code> - used to start the preview server with the configuration provided in the <code>webPreview</code> extension.</li>
+            <li><code>previewStatus</code> - used to display the current status of the preview server.</li>
             <li><code>stopPreview</code> - used to stop the preview server when it is running in background mode.</li>
         </ul>
 
