@@ -19,11 +19,12 @@ import groovy.transform.TypeChecked
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+import static com.stehno.gradle.web.PreviewStatusTask.PREVIEW_STATUS
 import static com.stehno.gradle.web.StartPreviewTask.START_PREVIEW
 import static com.stehno.gradle.web.StopPreviewTask.STOP_PREVIEW
 
 /**
- * TODO: document
+ * Plugin providing management tasks for an embedded web content preview server.
  */
 @TypeChecked
 class WebPreviewPlugin implements Plugin<Project> {
@@ -33,5 +34,6 @@ class WebPreviewPlugin implements Plugin<Project> {
 
         project.task START_PREVIEW, type: StartPreviewTask, group: 'Documentation', description: 'Starts a simple web preview server to serve local content.'
         project.task STOP_PREVIEW, type: StopPreviewTask, group: 'Documentation', description: 'Stops the preview server, if it is running.'
+        project.task PREVIEW_STATUS, type: PreviewStatusTask, group: 'Documentation', description: 'Displays information about the status of the preview server.'
     }
 }

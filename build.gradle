@@ -8,7 +8,7 @@ plugins {
     id "com.stehno.gradle.webpreview" version "0.1.1" // Note: this should be the PUBLISHED version
 }
 
-version = "0.1.2"
+version = "0.2.0"
 group = "com.stehno.gradle"
 
 sourceCompatibility = 8
@@ -26,7 +26,7 @@ dependencies {
     compile gradleApi()
     compile localGroovy()
 
-    compile 'org.eclipse.jetty.aggregate:jetty-all:9.3.12.v20160915'
+    compile 'io.undertow:undertow-core:1.4.6.Final'
 
     // TODO: figure out how to pull the version # from the Gradle distro
     groovyDoc "org.codehaus.groovy:groovy-groovydoc:2.4.7"
@@ -35,13 +35,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude module: 'groovy-all'
-    }
-}
-
-test {
-    testLogging {
-        events 'failed'
-        exceptionFormat 'short'
     }
 }
 

@@ -15,24 +15,24 @@
  */
 package com.stehno.gradle.web
 
+import groovy.transform.TypeChecked
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+
 /**
- * Gradle DSL extension used to configure the Web Preview plugin.
+ * Task used to retrieve status information (and ports) for the running server.
  */
-class WebPreviewExtension {
+@TypeChecked
+class PreviewStatusTask extends DefaultTask {
 
-    /**
-     * The web server port where content is to be served. The default is 0, which will choose a random available port. This port
-     * will be displayed in the output logs on startup.
-     */
-    int port = 0
+    static final String PREVIEW_STATUS = 'previewStatus'
 
-    /**
-     * Specifies the directory where the web resources are to be served from. This property is required.
-     */
-    File resourceDir
-
-    /**
-     * Whether or not the server URL is copied to the local clipboard on startup.
-     */
-    boolean copyUrl = true
+    @TaskAction @SuppressWarnings('GroovyUnusedDeclaration') void status() {
+        String serverUrl = PreviewServer.instance.url
+        if (serverUrl) {
+            logger.lifecycle "The preview server is running at $serverUrl."
+        } else {
+            logger.lifecycle 'The preview server is not running.'
+        }
+    }
 }

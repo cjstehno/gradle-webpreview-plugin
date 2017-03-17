@@ -20,8 +20,6 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
-import static com.stehno.gradle.web.ServerMonitor.stopServer
-
 class PreviewTaskSpec extends Specification implements UsesGradleBuild {
 
     @Rule TemporaryFolder projectRoot = new TemporaryFolder()
@@ -30,16 +28,14 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
         given:
         Random random = new Random()
 
-        def portRange = 2048..20202
-
-        int monitorPort = portRange[random.nextInt(portRange.size())]
-        int serverPort = monitorPort + 1
+        def portRange = 10101..20202
+        int serverPort = portRange[random.nextInt(portRange.size())]
 
         buildFile(extension: """
             webPreview {
                 port = $serverPort
-                monitorPort = $monitorPort
                 resourceDir = file('src/site')
+                copyUrl = false
             }
         """)
 
@@ -57,14 +53,25 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
         and: 'the content is accessible'
         "http://localhost:$serverPort/index.html".toURL().text == content
 
+        when: 'the status is requested'
+        result = gradleRunner(['previewStatus']).build()
+
+        then: 'the status is returned'
+        totalSuccess result
+        result.output.contains "The preview server is running at http://localhost:$serverPort."
+
         when: 'the stop task is run'
         result = gradleRunner(['stopPreview']).build()
 
-        // there is a bit of a lag between stop command and actual stop
-        sleep 1000
-
         then: 'the build is successful'
         totalSuccess result
+
+        when: 'the status is requested after shutdown'
+        result = gradleRunner(['previewStatus']).build()
+
+        then: 'the status is returned'
+        totalSuccess result
+        result.output.contains "The preview server is not running."
 
         when:
         String text = "http://localhost:$serverPort/index.html".toURL().text
@@ -74,7 +81,7 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
         thrown(Exception)
 
         cleanup: 'make sure everything is shutdown'
-        stopServer monitorPort
+        PreviewServer.instance.stop()
     }
 
     @Override
