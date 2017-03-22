@@ -57,7 +57,7 @@ with the random port setting.
 ### Tasks
 
 * `startPreview` - used to start the preview server with the configuration provided in the `webPreview` extension.
-* 'previewStatus' - used to display the status of the preview server. 
+* `previewStatus` - used to display the status of the preview server. 
 * `stopPreview` - used to stop the preview server when it is running in background mode.
 
 ## Building
@@ -66,4 +66,5 @@ You can build the project with Gradle:
 
     ./gradlew clean build
 
-Note that if you are using this plugin in other builds, some of the tests may fail (and kill your running preview servers).
+> Note: if you have the preview server running during a build/test of the plugin, you may get test failures. Shut down the preview server and try 
+building again.
