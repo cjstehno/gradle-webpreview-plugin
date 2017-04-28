@@ -84,6 +84,46 @@ class PreviewTaskSpec extends Specification implements UsesGradleBuild {
         PreviewServer.instance.stop()
     }
 
+    def 'preview server with context path'(){
+        setup:
+        Random random = new Random()
+
+        def portRange = 10101..20202
+        int serverPort = portRange[random.nextInt(portRange.size())]
+
+        buildFile(extension: """
+            webPreview {
+                port = $serverPort
+                resourceDir = file('src/site')
+                copyUrl = false
+                contextPath = 'foo'
+            }
+        """)
+
+        String content = 'This is some really cool web content!'
+
+        File siteDir = projectRoot.newFolder('src', 'site')
+        new File(siteDir, 'index.html').text = content
+
+        when:
+        BuildResult result = gradleRunner(['startPreview']).build()
+
+        then:
+        totalSuccess result
+
+        and:
+        "http://localhost:$serverPort/foo/index.html".toURL().text == content
+
+        when:
+        "http://localhost:$serverPort/index.html".toURL().text != content
+
+        then:
+        thrown(FileNotFoundException)
+
+        cleanup:
+        PreviewServer.instance.stop()
+    }
+
     @Override
     String getBuildTemplate() {
         '''
