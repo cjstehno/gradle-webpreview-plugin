@@ -21,7 +21,7 @@ You can apply the plugin using the `buildscript` block:
         }
       }
       dependencies {
-        classpath "gradle.plugin.com.stehno.gradle:webpreview:0.2.0"
+        classpath "gradle.plugin.com.stehno.gradle:webpreview:0.3.0"
       }
     }
     
@@ -30,7 +30,7 @@ You can apply the plugin using the `buildscript` block:
 Or the newer `plugins` block:
 
     plugins {
-      id "com.stehno.gradle.webpreview" version "0.2.0"
+      id "com.stehno.gradle.webpreview" version "0.3.0"
     }
     
 ## Usage
