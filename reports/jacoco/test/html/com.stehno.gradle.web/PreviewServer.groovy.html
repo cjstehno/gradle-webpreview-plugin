@@ -17,6 +17,8 @@ package com.stehno.gradle.web
 
 import groovy.transform.TypeChecked
 import io.undertow.Undertow
+import io.undertow.server.HttpHandler
+import io.undertow.server.handlers.PathHandler
 import io.undertow.server.handlers.resource.FileResourceManager
 import io.undertow.server.handlers.resource.ResourceHandler
 
@@ -27,35 +29,47 @@ import io.undertow.server.handlers.resource.ResourceHandler
 class PreviewServer {
 
     private Undertow server
+    private String path
 
     /**
      * Starts the server instance on the specified port and resource directory, if it is not already running.
      *
      * @param port the server port
      * @param directory the resource directory to be served
+     * @param contextPath the optional root context path
      */
-    void start(final int port, final File directory) {
-<span class="pc bpc" id="L38" title="2 of 4 branches missed.">        if (!server) {</span>
-<span class="fc" id="L39">            server = Undertow.builder()</span>
-                .addHttpListener(port, '0.0.0.0')
-<span class="fc" id="L41">                .setHandler(new ResourceHandler(new FileResourceManager(directory, 1)))</span>
-                .build()
+    void start(final int port, final File directory, final String contextPath = null) {
+<span class="pc bpc" id="L42" title="2 of 4 branches missed.">        if (!server) {</span>
+<span class="fc" id="L43">            this.path = contextPath</span>
 
-<span class="fc" id="L44">            server.start()</span>
+<span class="fc" id="L45">            HttpHandler handler = new ResourceHandler(new FileResourceManager(directory, 1))</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (contextPath) {</span>
+<span class="fc" id="L48">                PathHandler pathHandler = new PathHandler()</span>
+<span class="fc" id="L49">                pathHandler.addPrefixPath(contextPath, handler)</span>
+<span class="fc" id="L50">                handler = pathHandler</span>
+            }
+
+<span class="fc" id="L53">            server = Undertow.builder().addHttpListener(port, '0.0.0.0').setHandler(handler).build()</span>
+<span class="fc" id="L54">            server.start()</span>
         }
     }
 
     int getPort() {
-<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        server ? (server.listenerInfo[0].address as InetSocketAddress).port : -1</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        server ? (server.listenerInfo[0].address as InetSocketAddress).port : -1</span>
     }
 
     String getUrl() {
-<span class="pc bfc" id="L53" title="All 2 branches covered.">        server ? &quot;http://localhost:$port&quot; : null</span>
+<span class="pc bfc" id="L63" title="All 2 branches covered.">        server ? &quot;http://localhost:$port$contextPath&quot; : null</span>
+    }
+
+    String getContextPath() {
+<span class="pc bpc" id="L67" title="1 of 4 branches missed.">        return path ? (path.startsWith('/') ? path : &quot;/$path&quot;) : ''</span>
     }
 
     void stop() {
-<span class="fc" id="L57">        server?.stop()</span>
-<span class="fc" id="L58">        server = null</span>
+<span class="fc" id="L71">        server?.stop()</span>
+<span class="fc" id="L72">        server = null</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
