@@ -21,7 +21,7 @@ You can apply the plugin using the `buildscript` block:
         }
       }
       dependencies {
-        classpath "gradle.plugin.com.stehno.gradle:webpreview:0.2.0"
+        classpath "gradle.plugin.com.stehno.gradle:webpreview:0.3.0"
       }
     }
     
@@ -30,7 +30,7 @@ You can apply the plugin using the `buildscript` block:
 Or the newer `plugins` block:
 
     plugins {
-      id "com.stehno.gradle.webpreview" version "0.2.0"
+      id "com.stehno.gradle.webpreview" version "0.3.0"
     }
     
 ## Usage
@@ -43,6 +43,7 @@ To configure the Web Preview plugin, the `webPreview` extension is provided:
         port = 0
         copyUrl = true
         resourceDir = file('build/web')
+        contextPath = '/'
     }
 
 The `port` property is the web server port where content is to be served. The default is `0`, which will choose a random available port. This port 
@@ -53,6 +54,9 @@ will fail to start without it.
 
 The `copyUrl` property determines whether or not the server URL is copied to the local clipboard on startup. This is handy when running locally 
 with the random port setting.
+
+The `contextPath` is an optional property used to define the root context path to be used as a prefix for all content. If not specified the server 
+root "/" will be used.
 
 ### Tasks
 

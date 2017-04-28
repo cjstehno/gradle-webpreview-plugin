@@ -17,6 +17,8 @@ package com.stehno.gradle.web
 
 import groovy.transform.TypeChecked
 import io.undertow.Undertow
+import io.undertow.server.HttpHandler
+import io.undertow.server.handlers.PathHandler
 import io.undertow.server.handlers.resource.FileResourceManager
 import io.undertow.server.handlers.resource.ResourceHandler
 
@@ -27,20 +29,28 @@ import io.undertow.server.handlers.resource.ResourceHandler
 class PreviewServer {
 
     private Undertow server
+    private String path
 
     /**
      * Starts the server instance on the specified port and resource directory, if it is not already running.
      *
      * @param port the server port
      * @param directory the resource directory to be served
+     * @param contextPath the optional root context path
      */
-    void start(final int port, final File directory) {
+    void start(final int port, final File directory, final String contextPath = null) {
         if (!server) {
-            server = Undertow.builder()
-                .addHttpListener(port, '0.0.0.0')
-                .setHandler(new ResourceHandler(new FileResourceManager(directory, 1)))
-                .build()
+            this.path = contextPath
 
+            HttpHandler handler = new ResourceHandler(new FileResourceManager(directory, 1))
+
+            if (contextPath) {
+                PathHandler pathHandler = new PathHandler()
+                pathHandler.addPrefixPath(contextPath, handler)
+                handler = pathHandler
+            }
+
+            server = Undertow.builder().addHttpListener(port, '0.0.0.0').setHandler(handler).build()
             server.start()
         }
     }
@@ -50,7 +60,11 @@ class PreviewServer {
     }
 
     String getUrl() {
-        server ? "http://localhost:$port" : null
+        server ? "http://localhost:$port$contextPath" : null
+    }
+
+    String getContextPath() {
+        return path ? (path.startsWith('/') ? path : "/$path") : ''
     }
 
     void stop() {

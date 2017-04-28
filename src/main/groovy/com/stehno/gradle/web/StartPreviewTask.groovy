@@ -34,7 +34,7 @@ class StartPreviewTask extends DefaultTask {
         assert extension.resourceDir, 'No resourceDir configuration was provided.'
 
         PreviewServer server = PreviewServer.instance
-        server.start(extension.port, extension.resourceDir)
+        server.start(extension.port, extension.resourceDir, extension.contextPath)
 
         logger.lifecycle 'Started preview server ({}) for {}', server.url, extension.resourceDir
 

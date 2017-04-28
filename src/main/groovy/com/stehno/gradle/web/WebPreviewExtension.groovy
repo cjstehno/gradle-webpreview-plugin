@@ -35,4 +35,9 @@ class WebPreviewExtension {
      * Whether or not the server URL is copied to the local clipboard on startup.
      */
     boolean copyUrl = true
+
+    /**
+     * Specifies the optional root context path.
+     */
+    String contextPath
 }

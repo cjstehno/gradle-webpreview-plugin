@@ -60,6 +60,7 @@ apply plugin: "com.stehno.gradle.webpreview"</pre>
     port = 0
     copyUrl = true
     resourceDir = file('build/web')
+    contextPath = '/'
 }</pre>
 
         <p>where:</p>
@@ -73,6 +74,9 @@ apply plugin: "com.stehno.gradle.webpreview"</pre>
             </li>
             <li><code>copyUrl</code> - determines whether or not the server URL is copied to the local clipboard on startup. This is handy when
                 running locally with the random port setting.
+            </li>
+            <li><code>contextPath</code> - optional root context path to be used as a prefix for all content. If not specified the server root "/"
+                will be used.
             </li>
         </ul>
 
